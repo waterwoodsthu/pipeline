@@ -708,9 +708,6 @@ func (c *ACSKCluster) GetClusterDetails() (*pkgCluster.DetailsResponse, error) {
 		nodePools[np.Name] = &pkgCluster.NodePoolDetails{
 			CreatorBaseFields: *NewCreatorBaseFields(np.CreatedAt, np.CreatedBy),
 			NodePoolStatus:    *status.NodePools[np.Name],
-			//Count:             np.Count,
-			//MinCount:          np.Count,
-			//MaxCount:          np.Count,
 		}
 	}
 
