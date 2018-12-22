@@ -87,3 +87,11 @@ type AlibabaDescribeClusterLogResponseEntry struct {
 	Created time.Time `json:"created"` // The create time of the log entry
 	Updated time.Time `json:"updated"` // The update time of the log entry
 }
+
+type AlibabaDescribeClusterNodesResponse struct {
+	Nodes []Node `json:"nodes"` // Cluster's current nodes
+}
+
+type Node struct {
+	InstanceId string `json:"instance_id"`
+}
