@@ -15,9 +15,8 @@
 package manager
 
 import (
-	"fmt"
-
 	"github.com/banzaicloud/pipeline/pkg/providers/oracle/model"
+	"github.com/pkg/errors"
 )
 
 // ValidateModel validates model configuration
@@ -36,28 +35,28 @@ func (cm *ClusterManager) ValidateModel(clusterModel *model.Cluster) error {
 	}
 
 	if m.Delete && m.OCID == "" {
-		return fmt.Errorf("Cannot delete cluster without Cluster OCID specified")
+		return errors.New("cannot delete cluster without Cluster OCID specified")
 	}
 
 	vcn, err := vn.GetVCN(&m.VCNID)
 	if err != nil {
-		return fmt.Errorf("Invalid VCN OCID: %s", m.VCNID)
+		return errors.Errorf("invalid VCN OCID: %s", m.VCNID)
 	}
 
 	subnet, err := vn.GetSubnet(&m.LBSubnetID1)
 	if err != nil {
-		return fmt.Errorf("Invalid LB 1 Subnet OCID: %s", m.LBSubnetID1)
+		return errors.Errorf("invalid LB 1 Subnet OCID: %s", m.LBSubnetID1)
 	}
 	if *subnet.VcnId != *vcn.Id {
-		return fmt.Errorf("Invalid LB 1 Subnet OCID: %s not in VCN[%s]", m.LBSubnetID1, *vcn.Id)
+		return errors.Errorf("invalid LB 1 Subnet OCID: %s not in VCN[%s]", m.LBSubnetID1, *vcn.Id)
 	}
 
 	subnet, err = vn.GetSubnet(&m.LBSubnetID2)
 	if err != nil {
-		return fmt.Errorf("Invalid LB 2 Subnet OCID: %s", m.LBSubnetID2)
+		return errors.Errorf("invalid LB 2 Subnet OCID: %s", m.LBSubnetID2)
 	}
 	if *subnet.VcnId != *vcn.Id {
-		return fmt.Errorf("Invalid LB 2 Subnet OCID: %s not in VCN[%s]", m.LBSubnetID2, *vcn.Id)
+		return errors.Errorf("invalid LB 2 Subnet OCID: %s not in VCN[%s]", m.LBSubnetID2, *vcn.Id)
 	}
 
 	k8sVersions, err := ce.GetAvailableKubernetesVersions()
@@ -66,11 +65,11 @@ func (cm *ClusterManager) ValidateModel(clusterModel *model.Cluster) error {
 	}
 
 	if !k8sVersions.Has(m.Version) {
-		return fmt.Errorf("Invalid k8s version: %s", m.Version)
+		return errors.Errorf("invalid k8s version: %s", m.Version)
 	}
 
 	if len(m.NodePools) < 1 {
-		return fmt.Errorf("At least 1 node pool must be specified")
+		return errors.New("at least 1 node pool must be specified")
 	}
 
 	nodeOptions, err := ce.GetDefaultNodePoolOptions()
@@ -80,22 +79,22 @@ func (cm *ClusterManager) ValidateModel(clusterModel *model.Cluster) error {
 
 	for _, np := range m.NodePools {
 		if !nodeOptions.Images.Has(np.Image) {
-			return fmt.Errorf("Invalid node image '%s' at '%s'", np.Image, np.Name)
+			return errors.Errorf("invalid node image '%s' at '%s'", np.Image, np.Name)
 		}
 		if !nodeOptions.Shapes.Has(np.Shape) {
-			return fmt.Errorf("Invalid shape '%s' at '%s'", np.Shape, np.Name)
+			return errors.Errorf("invalid shape '%s' at '%s'", np.Shape, np.Name)
 		}
 		if len(np.Subnets) < 1 {
-			return fmt.Errorf("There must be at least 1 subnet specified")
+			return errors.New("there must be at least 1 subnet specified")
 		}
 
 		if m.Version != np.Version {
-			return fmt.Errorf("NodePool[%s]: Different k8s versions were specified for master[%s] and nodes[%s]", np.Name, m.Version, np.Version)
+			return errors.Errorf("nodePool[%s]: Different k8s versions were specified for master[%s] and nodes[%s]", np.Name, m.Version, np.Version)
 		}
 
 		for _, subnet := range np.Subnets {
 			if _, err := vn.GetSubnet(&subnet.SubnetID); err != nil {
-				return fmt.Errorf("Invalid Subnet OCID: %s", subnet.SubnetID)
+				return errors.Errorf("invalid Subnet OCID: %s", subnet.SubnetID)
 			}
 		}
 	}

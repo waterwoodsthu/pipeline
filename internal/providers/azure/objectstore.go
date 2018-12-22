@@ -359,7 +359,7 @@ func (s *ObjectStore) ListBuckets() ([]*objectstore.BucketInfo, error) {
 
 	resourceGroups, err := azureObjectstore.GetAllResourceGroups(getCredentials(s.secret))
 	if err != nil {
-		return nil, fmt.Errorf("getting all resource groups failed: %s", err.Error())
+		return nil, errors.Wrap(err, "getting all resource groups failed")
 	}
 
 	buckets := make([]*objectstore.BucketInfo, 0)
@@ -369,7 +369,7 @@ func (s *ObjectStore) ListBuckets() ([]*objectstore.BucketInfo, error) {
 
 		storageAccounts, err := azureObjectstore.GetAllStorageAccounts(getCredentials(s.secret), *rg.Name)
 		if err != nil {
-			return nil, fmt.Errorf("getting all storage accounts under resource group=%s failed: %s", *(rg.Name), err.Error())
+			return nil, errors.Wrapf(err, "getting all storage accounts under resource group=%s failed", *(rg.Name))
 		}
 
 		// get all Blob containers under the storage account
@@ -411,7 +411,7 @@ func (s *ObjectStore) ListBuckets() ([]*objectstore.BucketInfo, error) {
 
 	err = s.db.Where(&ObjectStoreBucketModel{OrganizationID: s.org.ID}).Order("resource_group asc, storage_account asc, name asc").Find(&objectStores).Error
 	if err != nil {
-		return nil, fmt.Errorf("retrieving managed buckets failed: %s", err.Error())
+		return nil, errors.Wrap(err, "retrieving managed buckets failed")
 	}
 
 	for _, bucketInfo := range buckets {

@@ -19,6 +19,7 @@ import (
 	"math"
 	"strconv"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"k8s.io/api/core/v1"
 	"k8s.io/api/rbac/v1beta1"
@@ -40,7 +41,7 @@ func GetOrCreateClusterRole(log logrus.FieldLogger, client *kubernetes.Clientset
 
 	if len(clusterRoles.Items) > 1 {
 		log.Errorf("duplicate cluster role with name %q found", name)
-		return nil, fmt.Errorf("duplicate cluster role with name %q found", name)
+		return nil, errors.Errorf("duplicate cluster role with name %q found", name)
 	}
 
 	if len(clusterRoles.Items) == 1 {
@@ -79,7 +80,7 @@ func GetOrCreateServiceAccount(log logrus.FieldLogger, client *kubernetes.Client
 
 	if len(serviceAccounts.Items) > 1 {
 		log.Errorf("duplicate service account with '%s/%s' found ", namespace, name)
-		return nil, fmt.Errorf("duplicate service account with '%s/%s' found ", namespace, name)
+		return nil, errors.Errorf("duplicate service account with '%s/%s' found ", namespace, name)
 	}
 
 	if len(serviceAccounts.Items) == 1 {
@@ -120,7 +121,7 @@ func GetOrCreateClusterRoleBinding(log logrus.FieldLogger,
 
 	if len(clusterRoleBindings.Items) > 1 {
 		log.Errorf("duplicate cluster role binding with name %q found", name)
-		return nil, fmt.Errorf("duplicate cluster role binding with name %q found", name)
+		return nil, errors.Errorf("duplicate cluster role binding with name %q found", name)
 	}
 
 	if len(clusterRoleBindings.Items) == 1 {

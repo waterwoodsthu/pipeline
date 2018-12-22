@@ -16,10 +16,10 @@ package oci
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/core"
+	"github.com/pkg/errors"
 )
 
 // CreateInternetGateway creates an Internet Gateway specified in the request
@@ -79,7 +79,7 @@ func (vn *VirtualNetwork) GetInternetGatewayByName(name string, vcnID *string) (
 	}
 
 	if len(response.Items) < 1 {
-		return igw, fmt.Errorf("Internet Gateway not found: %s", name)
+		return igw, errors.Errorf("Internet Gateway not found: %s", name)
 	}
 
 	return response.Items[0], err

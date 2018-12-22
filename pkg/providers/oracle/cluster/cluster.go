@@ -15,10 +15,10 @@
 package cluster
 
 import (
-	"fmt"
 	"regexp"
 
 	pkgCommon "github.com/banzaicloud/pipeline/pkg/common"
+	"github.com/pkg/errors"
 )
 
 // Cluster describes Pipeline's Oracle fields of a Create/Update request
@@ -142,26 +142,26 @@ func (c *Cluster) AddDefaults() error {
 func (c *Cluster) Validate(update bool) error {
 
 	if c == nil {
-		return fmt.Errorf("Oracle is <nil>")
+		return errors.New("oracle is <nil>")
 	}
 
 	if !isValidVersion(c.Version) {
-		return fmt.Errorf("Invalid k8s version: %s", c.Version)
+		return errors.Errorf("invalid k8s version: %s", c.Version)
 	}
 
 	if len(c.NodePools) < 1 {
-		return fmt.Errorf("At least 1 node pool must be specified")
+		return errors.New("at least 1 node pool must be specified")
 	}
 
 	for name, nodePool := range c.NodePools {
 		if nodePool.Version != c.Version {
-			return fmt.Errorf("NodePool[%s]: Different k8s versions were specified for master and nodes", name)
+			return errors.Errorf("nodePool[%s]: Different k8s versions were specified for master and nodes", name)
 		}
 		if nodePool.Image == "" && !update {
-			return fmt.Errorf("NodePool[%s]: Node image must be specified", name)
+			return errors.Errorf("nodePool[%s]: Node image must be specified", name)
 		}
 		if nodePool.Shape == "" && !update {
-			return fmt.Errorf("NodePool[%s]: Node shape must be specified", name)
+			return errors.Errorf("nodePool[%s]: Node shape must be specified", name)
 		}
 	}
 

@@ -15,9 +15,8 @@
 package secret
 
 import (
-	"fmt"
-
 	"github.com/aokoli/goutils"
+	"github.com/pkg/errors"
 )
 
 // DefaultPasswordFormat is the format of passwords if not specified otherwise
@@ -35,7 +34,7 @@ func RandomString(genType string, length int) (res string, err error) {
 	case "randAscii":
 		res, err = goutils.RandomAscii(length)
 	default:
-		return res, fmt.Errorf("unsupported random type: %s", genType)
+		return res, errors.Errorf("unsupported random type: %s", genType)
 	}
 	return
 

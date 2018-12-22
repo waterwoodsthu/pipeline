@@ -335,7 +335,7 @@ func getClusterDetails(client *cs.Client, clusterID string) (r *acsk.AlibabaDesc
 		return
 	}
 	if !resp.IsSuccess() || resp.GetHttpStatus() < 200 || resp.GetHttpStatus() > 299 {
-		err = errors.Wrapf(err, "Unexpected http status code: %d", resp.GetHttpStatus())
+		err = errors.Wrapf(err, "unexpected http status code: %d", resp.GetHttpStatus())
 		return
 	}
 

@@ -15,10 +15,9 @@
 package oci
 
 import (
-	"fmt"
-
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/identity"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -104,7 +103,7 @@ func (oci *OCI) Validate() error {
 	}
 
 	if tenancyID != *oci.Tenancy.Id {
-		return fmt.Errorf("Invalid Tenancy ID: %s != %s", tenancyID, *oci.Tenancy.Id)
+		return errors.Errorf("invalid Tenancy ID: %s != %s", tenancyID, *oci.Tenancy.Id)
 	}
 
 	// check Compartment OCID validity
@@ -116,7 +115,7 @@ func (oci *OCI) Validate() error {
 	_, err = i.GetCompartment(&oci.credential.CompartmentOCID)
 	if err != nil {
 		if err.Error() == "Service error:NotAuthorizedOrNotFound. Authorization failed or requested resource not found. http status code: 404" {
-			err = fmt.Errorf("Invalid Compartment OCID: %s", oci.credential.CompartmentOCID)
+			err = errors.Errorf("invalid Compartment OCID: %s", oci.credential.CompartmentOCID)
 		}
 
 		return err

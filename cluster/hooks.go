@@ -165,7 +165,7 @@ func InstallLogging(cluster CommonCluster, param pkgCluster.PostHookParam) error
 	// Set TLS default values (default True)
 	if loggingParam.SecretId == "" {
 		if loggingParam.SecretName == "" {
-			return fmt.Errorf("either secretId or secretName has to be set")
+			return errors.New("either secretId or secretName has to be set")
 		}
 		loggingParam.SecretId = secret.GenerateSecretIDFromName(loggingParam.SecretName)
 	}
@@ -361,7 +361,7 @@ func InstallLogging(cluster CommonCluster, param pkgCluster.PostHookParam) error
 			return emperror.Wrap(err, "install azure-output failed")
 		}
 	default:
-		return fmt.Errorf("unexpected logging secret type: %s", logSecret.Type)
+		return errors.Errorf("unexpected logging secret type: %s", logSecret.Type)
 	}
 	// Install output related secret
 	cluster.SetLogging(true)

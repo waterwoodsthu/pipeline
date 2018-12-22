@@ -16,10 +16,10 @@ package oci
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/core"
+	"github.com/pkg/errors"
 )
 
 // CreateRouteTable creates a Route Table specified in the request
@@ -79,7 +79,7 @@ func (vn *VirtualNetwork) GetRouteTableByName(name string, vcnID *string) (table
 	}
 
 	if len(response.Items) < 1 {
-		return table, fmt.Errorf("Route Table not found: %s", name)
+		return table, errors.Errorf("Route Table not found: %s", name)
 	}
 
 	return response.Items[0], err

@@ -15,12 +15,12 @@
 package eks
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 
 	"github.com/banzaicloud/pipeline/config"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
@@ -54,7 +54,7 @@ func getEksCloudFormationTemplate(name string) (string, error) {
 			defer resp.Body.Close()
 		}
 	} else {
-		err = fmt.Errorf("Not supported scheme: %s", u.Scheme)
+		err = errors.Errorf("not supported scheme: %s", u.Scheme)
 	}
 
 	if err != nil {

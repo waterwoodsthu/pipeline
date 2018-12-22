@@ -180,7 +180,7 @@ func NewAwsRoute53(region, awsSecretId, awsSecretKey string, notifications chan 
 	}
 
 	if len(baseHostedZoneId) == 0 {
-		return nil, fmt.Errorf("hosted zone for base domain '%s' not found", baseDomain)
+		return nil, errors.Errorf("hosted zone for base domain '%s' not found", baseDomain)
 	}
 
 	awsRoute53.baseHostedZoneId = baseHostedZoneId
@@ -279,7 +279,7 @@ func (dns *awsRoute53) registerDomain(orgId uint, domain string) error {
 	}
 
 	if foundInStateStore && state.status == REMOVING {
-		return fmt.Errorf("%s is in progress", state.status)
+		return errors.Errorf("%s is in progress", state.status)
 	}
 
 	if foundInStateStore {
@@ -389,13 +389,12 @@ func (dns *awsRoute53) unregisterDomain(orgId uint, domain string) error {
 	}
 
 	if !found {
-		msg := fmt.Sprintf("domain '%s' not found in state store", domain)
-		log.Errorf(msg)
-		return fmt.Errorf(msg)
+		log.Errorf("domain '%s' not found in state store", domain)
+		return errors.Errorf("domain '%s' not found in state store", domain)
 	}
 
 	if found && state.status == CREATING {
-		return fmt.Errorf("%s is in progress", state.status)
+		return errors.Errorf("%s is in progress", state.status)
 	}
 
 	state.status = REMOVING
@@ -928,7 +927,7 @@ func (dns *awsRoute53) startNewWorker() chan workerTask {
 				domain, err := dns.getOrgDomain(task.organisationId)
 				task.responseQueue <- workerResponse{error: err, result: domain}
 			default:
-				task.responseQueue <- workerResponse{error: fmt.Errorf("operation %q not supported", task.operation)}
+				task.responseQueue <- workerResponse{error: errors.Errorf("operation %q not supported", task.operation)}
 			}
 		}
 

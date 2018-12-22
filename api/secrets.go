@@ -588,7 +588,7 @@ func checkClustersBeforeDelete(orgId uint, secretId string) error {
 
 	for _, c := range clusters {
 		if _, err := c.GetStatus(); err == nil {
-			return fmt.Errorf("there's a running cluster with this secret: %s[%d]", c.GetName(), c.GetID())
+			return errors.Errorf("there's a running cluster with this secret: %s[%d]", c.GetName(), c.GetID())
 		}
 	}
 

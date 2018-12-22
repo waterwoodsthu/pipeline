@@ -15,10 +15,9 @@
 package hpa
 
 import (
-	"errors"
-	"fmt"
 	"strconv"
 
+	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 )
 
@@ -106,17 +105,17 @@ func (rm ResourceMetric) validateResourceMetric() error {
 	case PercentageValueType:
 		int64Value, err := strconv.ParseInt(rm.TargetAverageValue, 10, 32)
 		if err != nil {
-			return errors.New("invalid percentage value specified")
+			return errors.Wrap(err, "invalid percentage value specified")
 		}
 		targetValue := int32(int64Value)
 		if targetValue <= 0 || targetValue > 100 {
-			return fmt.Errorf("invalid percentage value specified: %v (Percentage value shoud be between [1,99]", targetValue)
+			return errors.Errorf("invalid percentage value specified: %v (Percentage value shoud be between [1,99]", targetValue)
 
 		}
 	case QuantityValueType:
 		_, err := resource.ParseQuantity(rm.TargetAverageValue)
 		if err != nil {
-			return fmt.Errorf("invalid resource metric value: %v (%v)", rm.TargetAverageValue, err.Error())
+			return errors.Wrapf(err, "invalid resource metric value: %v", rm.TargetAverageValue)
 		}
 	}
 	return nil
@@ -124,12 +123,12 @@ func (rm ResourceMetric) validateResourceMetric() error {
 
 func (rm CustomMetric) validateCustomMetric() error {
 	if rm.Type != "pod" {
-		return fmt.Errorf("invalid custom metric type specified: %v", rm.Type)
+		return errors.Errorf("invalid custom metric type specified: %v", rm.Type)
 	}
 
 	_, err := resource.ParseQuantity(rm.TargetAverageValue)
 	if err != nil {
-		return fmt.Errorf("invalid custom metric value: %v (%v)", rm.TargetAverageValue, err.Error())
+		return errors.Wrapf(err, "invalid custom metric value: %v", rm.TargetAverageValue)
 	}
 
 	return nil

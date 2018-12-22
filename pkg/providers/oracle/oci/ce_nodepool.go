@@ -16,10 +16,10 @@ package oci
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/containerengine"
+	"github.com/pkg/errors"
 )
 
 // CreateNodePool creates node pool specified in the request
@@ -38,7 +38,7 @@ func (ce *ContainerEngine) CreateNodePool(request containerengine.CreateNodePool
 	}
 
 	if workReqResp.WorkRequest.Status != containerengine.WorkRequestStatusSucceeded {
-		return nodepoolOCID, fmt.Errorf("WorkReqResp status: %s", workReqResp.WorkRequest.Status)
+		return nodepoolOCID, errors.Errorf("workReqResp status: %s", workReqResp.WorkRequest.Status)
 	}
 
 	if workReqResp.WorkRequest.Status == containerengine.WorkRequestStatusSucceeded {
@@ -62,7 +62,7 @@ func (ce *ContainerEngine) UpdateNodePool(request containerengine.UpdateNodePool
 	}
 
 	if workReqResp.WorkRequest.Status != containerengine.WorkRequestStatusSucceeded {
-		return nodepoolOCID, fmt.Errorf("WorkReqResp status: %s", workReqResp.WorkRequest.Status)
+		return nodepoolOCID, errors.Errorf("workReqResp status: %s", workReqResp.WorkRequest.Status)
 	}
 
 	if workReqResp.WorkRequest.Status == containerengine.WorkRequestStatusSucceeded {
@@ -88,7 +88,7 @@ func (ce *ContainerEngine) DeleteNodePool(id *string) error {
 	}
 
 	if workReqResp.WorkRequest.Status != containerengine.WorkRequestStatusSucceeded {
-		return fmt.Errorf("WorkReqResp status: %s", workReqResp.WorkRequest.Status)
+		return errors.Errorf("workReqResp status: %s", workReqResp.WorkRequest.Status)
 	}
 
 	return nil
@@ -215,7 +215,7 @@ func (ce *ContainerEngine) IsNodePoolActive(id *string) (bool, error) {
 	}
 
 	if nodeErrorMessage != "" {
-		return false, fmt.Errorf(nodeErrorMessage)
+		return false, errors.New(nodeErrorMessage)
 	}
 
 	return false, nil

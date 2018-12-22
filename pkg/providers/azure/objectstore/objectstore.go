@@ -16,7 +16,6 @@ package objectstore
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -84,7 +83,7 @@ func (o *objectStore) createResourceGroup() error {
 
 	authorizer, err := newAuthorizer(o.credentials)
 	if err != nil {
-		return fmt.Errorf("authentication failed: %s", err.Error())
+		return errors.Wrap(err, "authentication failed")
 	}
 
 	gclient := resources.NewGroupsClient(o.credentials.SubscriptionID)
@@ -168,7 +167,7 @@ func (o *objectStore) createStorageAccount() error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("cannot create storage account: %v", err)
+		return errors.Wrap(err, "cannot create storage account")
 	}
 
 	logger.Info("storage account creation request sent")

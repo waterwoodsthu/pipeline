@@ -235,7 +235,7 @@ func GetDeployment(c *gin.Context) {
 
 	deployment, err := helm.GetDeployment(name, kubeConfig)
 	if err == nil && tag != "" && !helm.DeploymentHasTag(deployment, tag) {
-		notFoundError := &helm.DeploymentNotFoundError{HelmError: fmt.Errorf("tag not found")}
+		notFoundError := &helm.DeploymentNotFoundError{HelmError: errors.New("tag not found")}
 		err = notFoundError
 		for version := deployment.Version - 1; version > 0; version-- {
 			deployment, err = helm.GetDeploymentByVersion(name, kubeConfig, version)

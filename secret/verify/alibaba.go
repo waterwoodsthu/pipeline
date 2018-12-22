@@ -15,15 +15,14 @@
 package verify
 
 import (
-	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	pkgSecret "github.com/banzaicloud/pipeline/pkg/secret"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -57,7 +56,7 @@ func (v *alibabaVerify) VerifySecret() error {
 		return err
 	}
 	if resp.GetHttpStatus() != http.StatusOK {
-		return errors.New("Unexpected http status code: " + strconv.Itoa(resp.GetHttpStatus()))
+		return errors.Errorf("unexpected http status code: %d", resp.GetHttpStatus())
 	}
 
 	return nil

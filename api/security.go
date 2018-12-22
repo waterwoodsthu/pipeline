@@ -440,7 +440,7 @@ func GetImageDeployments(c *gin.Context) {
 
 	re := regexp.MustCompile("^sha256:[a-f0-9]{64}$")
 	if !re.MatchString(imageDigest) {
-		err := fmt.Errorf("Invalid imageID format: %s", imageDigest)
+		err := errors.Errorf("invalid imageID format: %s", imageDigest)
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, pkgCommmon.ErrorResponse{
 			Code:    http.StatusBadRequest,

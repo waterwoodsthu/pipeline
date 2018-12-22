@@ -479,7 +479,7 @@ func findRegionByZone(csv *gkeCompute.Service, project, zone string) (*gkeComput
 			}
 		}
 	}
-	return nil, fmt.Errorf("cannot find zone[%s] in regions", zone)
+	return nil, errors.Errorf("cannot find zone[%s] in regions", zone)
 }
 
 func getZoneScope(project, zone string) string {

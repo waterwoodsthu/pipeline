@@ -237,7 +237,7 @@ func (bus BanzaiUserStorer) Save(schema *auth.Schema, context *auth.Context) (us
 	db := context.Auth.GetDB(context.Request)
 	err = db.Create(currentUser).Error
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to create user organization: %s", err.Error())
+		return nil, "", errors.Wrap(err, "failed to create user organization")
 	}
 
 	err = helm.InstallLocalHelm(helm.GenerateHelmRepoEnv(currentUser.Organizations[0].Name))
@@ -252,7 +252,7 @@ func (bus BanzaiUserStorer) Save(schema *auth.Schema, context *auth.Context) (us
 	token.Value = githubExtraInfo.Token
 	err = TokenStore.Store(fmt.Sprint(currentUser.ID), token)
 	if err != nil {
-		return "", "", fmt.Errorf("failed to store Github access token: %s", err.Error())
+		return "", "", errors.Wrap(err, "failed to store Github access token")
 	}
 
 	bus.accessManager.AddOrganizationPolicies(currentUser.Organizations[0].ID)

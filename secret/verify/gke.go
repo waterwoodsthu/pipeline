@@ -16,12 +16,11 @@ package verify
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/goph/emperror"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
 	pkgSecret "github.com/banzaicloud/pipeline/pkg/secret"
@@ -88,8 +87,7 @@ func checkProject(client *http.Client, projectId string) error {
 		return err
 	}
 	if missing != nil {
-		errorMessage := fmt.Sprintf("required API services are disabled: %s", strings.Join(missing, ","))
-		err = errors.New(errorMessage)
+		err = errors.Errorf("required API services are disabled: %s", strings.Join(missing, ","))
 	}
 
 	return err

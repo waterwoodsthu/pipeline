@@ -16,9 +16,8 @@ package cluster
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	gkeCompute "google.golang.org/api/compute/v1"
 )
@@ -90,7 +89,7 @@ func findInstanceByClusterName(csv *gkeCompute.Service, project, zone, clusterNa
 		}
 	}
 
-	return nil, fmt.Errorf("instance not found by cluster[%s]", clusterName)
+	return nil, errors.Errorf("instance not found by cluster[%s]", clusterName)
 }
 
 // findTargetPoolsByInstances returns all target pools which created by Kubernetes

@@ -16,7 +16,6 @@ package cluster
 
 import (
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -44,6 +43,7 @@ import (
 	"github.com/banzaicloud/pipeline/utils"
 	"github.com/ghodss/yaml"
 	"github.com/goph/emperror"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"k8s.io/api/core/v1"
@@ -551,13 +551,13 @@ func (c *EKSCluster) UpdateCluster(updateRequest *pkgCluster.UpdateClusterReques
 	}
 
 	if len(securityGroupId) == 0 {
-		return errors.New("securityGroupId output not found on stack: " + clusterStackName)
+		return errors.Errorf("securityGroupId output not found on stack: %s", clusterStackName)
 	}
 	if len(vpcId) == 0 {
-		return errors.New("vpcId output not found on stack: " + clusterStackName)
+		return errors.Errorf("vpcId output not found on stack: %s", clusterStackName)
 	}
 	if len(subnetIds) == 0 {
-		return errors.New("subnetIds output not found on stack: " + clusterStackName)
+		return errors.Errorf("subnetIds output not found on stack: %s", clusterStackName)
 	}
 
 	nodePoolTemplate, err := pkgEks.GetNodePoolTemplate()

@@ -14,7 +14,7 @@
 
 package cluster
 
-import "errors"
+import "github.com/pkg/errors"
 
 var ErrInvalidClusterInstance = errors.New("invalid cluster instance")
 

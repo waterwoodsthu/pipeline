@@ -16,10 +16,10 @@ package oci
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/core"
+	"github.com/pkg/errors"
 )
 
 // CreateSecurityList creates a Security List specified in the request
@@ -79,7 +79,7 @@ func (vn *VirtualNetwork) GetSecurityListByName(name string, vcnID *string) (lis
 	}
 
 	if len(response.Items) < 1 {
-		return list, fmt.Errorf("Security List not found: %s", name)
+		return list, errors.Errorf("Security List not found: %s", name)
 	}
 
 	return response.Items[0], err

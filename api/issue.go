@@ -62,7 +62,7 @@ func NewIssueHandler(version, commitHash, buildDate string) (gin.HandlerFunc, er
 		err := issuer.CreateIssue(userID, request.Organization, request.Title, request.Text, request.Labels)
 
 		if err != nil {
-			errorHandler.Handle(errors.Wrapf(err, "failed to create issue"))
+			errorHandler.Handle(errors.Wrap(err, "failed to create issue"))
 			c.JSON(http.StatusInternalServerError, pkgCommon.ErrorResponse{
 				Code:    http.StatusInternalServerError,
 				Message: "failed to create issue",

@@ -68,7 +68,7 @@ func NewGithubAuthorizeHandler(provider *githubauth.GithubProvider) func(context
 				return nil, auth.ErrUnauthorized
 			}
 
-			token, err = oauthCfg.Exchange(oauth2.NoContext, req.URL.Query().Get("code"))
+			token, err = oauthCfg.Exchange(context.TODO(), req.URL.Query().Get("code"))
 
 			if err != nil {
 				log.Errorln("oauth exchange failed", err.Error())
@@ -76,8 +76,8 @@ func NewGithubAuthorizeHandler(provider *githubauth.GithubProvider) func(context
 			}
 		}
 
-		client := github.NewClient(oauthCfg.Client(oauth2.NoContext, token))
-		user, _, err := client.Users.Get(oauth2.NoContext, "")
+		client := github.NewClient(oauthCfg.Client(context.TODO(), token))
+		user, _, err := client.Users.Get(context.TODO(), "")
 		if err != nil {
 			log.Errorln("failed to query user metadata from GitHub", err.Error())
 			return nil, err
@@ -112,7 +112,7 @@ func NewGithubAuthorizeHandler(provider *githubauth.GithubProvider) func(context
 			whitelistedCandidates = append(whitelistedCandidates, &userWhitelisted)
 
 			// Also check if the user is member of one of the whitelisted organizations
-			userOrgs, _, err := client.Organizations.List(oauth2.NoContext, "", &github.ListOptions{})
+			userOrgs, _, err := client.Organizations.List(context.TODO(), "", &github.ListOptions{})
 			if err != nil {
 				log.Errorln("failed to query user's organizations from GitHub", err.Error())
 				return nil, err
@@ -143,14 +143,14 @@ func NewGithubAuthorizeHandler(provider *githubauth.GithubProvider) func(context
 			}
 
 			if !userIsWhitelisted {
-				return nil, fmt.Errorf("sorry, you are not invited currently to this release")
+				return nil, errors.New("sorry, you are not invited currently to this release")
 			}
 		}
 
 		// If user email is not available in the primary user info (hidden email on profile)
 		// get it with the help of the API (the user has given right to do that).
 		if user.Email == nil {
-			emails, _, err := client.Users.ListEmails(oauth2.NoContext, &github.ListOptions{})
+			emails, _, err := client.Users.ListEmails(context.TODO(), &github.ListOptions{})
 			if err != nil {
 				log.Errorln("failed to fetch user's emails from GitHub", err.Error())
 				return nil, err
@@ -194,13 +194,13 @@ func NewGithubAuthorizeHandler(provider *githubauth.GithubProvider) func(context
 // GetGithubUser returns github user by token
 func getGithubUser(accessToken string) (*github.User, error) {
 	client := NewGithubClient(accessToken)
-	user, _, err := client.Users.Get(oauth2.NoContext, "")
+	user, _, err := client.Users.Get(context.TODO(), "")
 	return user, err
 }
 
 func NewGithubClient(accessToken string) *github.Client {
 	httpClient := oauth2.NewClient(
-		oauth2.NoContext,
+		context.TODO(),
 		oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken}),
 	)
 
@@ -239,7 +239,7 @@ func getGithubOrganizations(token string) ([]githubOrganization, error) {
 	httpClient := oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}))
 	githubClient := github.NewClient(httpClient)
 
-	memberships, _, err := githubClient.Organizations.ListOrgMemberships(oauth2.NoContext, nil)
+	memberships, _, err := githubClient.Organizations.ListOrgMemberships(context.TODO(), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to list organization memberships")
 	}

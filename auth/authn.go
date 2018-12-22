@@ -281,7 +281,7 @@ func (h *tokenHandler) GenerateToken(c *gin.Context) {
 		githubUser, err := getGithubUser(accessToken)
 		if err != nil {
 			errorHandler.Handle(errors.Wrap(err, "failed to query GitHub user"))
-			c.AbortWithError(http.StatusUnauthorized, fmt.Errorf("Invalid session"))
+			c.AbortWithError(http.StatusUnauthorized, errors.New("invalid session"))
 			return
 		}
 		user := User{}
@@ -334,7 +334,7 @@ func (h *tokenHandler) GenerateToken(c *gin.Context) {
 	tokenID, signedToken, err := createAndStoreAPIToken(userID, userLogin, tokenType, tokenRequest.Name, tokenRequest.ExpiresAt)
 
 	if err != nil {
-		err = c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("%s", err))
+		err = c.AbortWithError(http.StatusInternalServerError, err)
 		errorHandler.Handle(errors.Wrap(err, "failed to create and store API token"))
 		return
 	}
@@ -446,7 +446,7 @@ func DeleteToken(c *gin.Context) {
 	tokenID := c.Param("id")
 
 	if tokenID == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, fmt.Errorf("Missing token id"))
+		c.AbortWithStatusJSON(http.StatusBadRequest, errors.New("missing token id"))
 	} else {
 		err := TokenStore.Revoke(currentUser.IDString(), tokenID)
 		if err != nil {
@@ -473,7 +473,7 @@ func (sessionStorer *BanzaiSessionStorer) Update(w http.ResponseWriter, req *htt
 	}
 	currentUser := user.(*User)
 	if currentUser == nil {
-		return fmt.Errorf("Can't get current user")
+		return errors.New("can't get current user")
 	}
 
 	// These tokens are GCd after they expire

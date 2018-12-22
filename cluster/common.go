@@ -101,7 +101,7 @@ type CommonClusterBase struct {
 }
 
 // ErrConfigNotExists means that a cluster has no kubeconfig stored in vault (probably didn't successfully start yet)
-var ErrConfigNotExists = fmt.Errorf("Kubernetes config is not available for the cluster")
+var ErrConfigNotExists = errors.New("kubernetes config is not available for the cluster")
 
 // RequiresSshPublicKey returns true if an ssh public key is needed for the cluster for bootstrapping it.
 // The default is false.

@@ -246,7 +246,7 @@ func deleteCluster(clusterID string, csClient *cs.Client) error {
 	}
 
 	if resp.GetHttpStatus() != http.StatusAccepted {
-		return fmt.Errorf("unexpected http status code: %d", resp.GetHttpStatus())
+		return errors.Errorf("unexpected http status code: %d", resp.GetHttpStatus())
 	}
 
 	return nil
@@ -325,7 +325,7 @@ func getClusterDetails(clusterID string, csClient *cs.Client) (r *acsk.AlibabaDe
 		return
 	}
 	if !resp.IsSuccess() || resp.GetHttpStatus() < 200 || resp.GetHttpStatus() > 299 {
-		err = errors.Wrapf(err, "Unexpected http status code: %d", resp.GetHttpStatus())
+		err = errors.Wrapf(err, "unexpected http status code: %d", resp.GetHttpStatus())
 		return
 	}
 
@@ -479,7 +479,7 @@ func collectClusterLogs(clusterID string, csClient *cs.Client) ([]*acsk.AlibabaD
 
 	if clusterLogsResp != nil {
 		if !clusterLogsResp.IsSuccess() || clusterLogsResp.GetHttpStatus() < 200 || clusterLogsResp.GetHttpStatus() > 299 {
-			return nil, errors.Wrapf(err, "Unexpected http status code: %d", clusterLogsResp.GetHttpStatus())
+			return nil, errors.Wrapf(err, "unexpected http status code: %d", clusterLogsResp.GetHttpStatus())
 		}
 
 		var clusterLogs []*acsk.AlibabaDescribeClusterLogResponseEntry

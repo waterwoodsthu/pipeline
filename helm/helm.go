@@ -327,7 +327,7 @@ func UpgradeDeployment(releaseName, chartName, chartVersion string, chartPackage
 
 	chartRequested, err := getRequestedChart(releaseName, chartName, chartVersion, chartPackage, env)
 	if err != nil {
-		return nil, fmt.Errorf("error loading chart: %v", err)
+		return nil, errors.Wrap(err, "error loading chart")
 	}
 
 	//Get cluster based on inCluster kubeconfig
@@ -357,7 +357,7 @@ func CreateDeployment(chartName, chartVersion string, chartPackage []byte, names
 
 	chartRequested, err := getRequestedChart(releaseName, chartName, chartVersion, chartPackage, env)
 	if err != nil {
-		return nil, fmt.Errorf("error loading chart: %v", err)
+		return nil, errors.Wrap(err, "error loading chart")
 	}
 
 	if len(strings.TrimSpace(releaseName)) == 0 {
@@ -373,7 +373,7 @@ func CreateDeployment(chartName, chartVersion string, chartPackage []byte, names
 
 	if !dryRun && odPcts != nil {
 		if len(releaseName) == 0 {
-			return nil, fmt.Errorf("release name cannot be empty when setting on-demand percentages")
+			return nil, errors.New("release name cannot be empty when setting on-demand percentages")
 		}
 		err = updateSpotConfigMap(kubeConfig, odPcts, releaseName)
 		if err != nil {
@@ -407,7 +407,7 @@ func CreateDeployment(chartName, chartVersion string, chartPackage []byte, names
 				log.Warn("failed to clean up spot config map")
 			}
 		}
-		return nil, fmt.Errorf("Error deploying chart: %v", err)
+		return nil, errors.Wrap(err, "error deploying chart")
 	}
 	return installRes, nil
 }
@@ -660,7 +660,7 @@ func checkDependencies(ch *chart.Chart, reqs *chartutil.Requirements) error {
 	}
 
 	if len(missing) > 0 {
-		return fmt.Errorf("found in requirements.yaml, but missing in charts/ directory: %s", strings.Join(missing, ", "))
+		return errors.Errorf("found in requirements.yaml, but missing in charts/ directory: %s", strings.Join(missing, ", "))
 	}
 	return nil
 }

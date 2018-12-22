@@ -23,6 +23,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/route53"
 	"github.com/banzaicloud/pipeline/pkg/amazon"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -96,7 +97,7 @@ func (dns *awsRoute53) hostedZoneExistsByDomain(domain string) (string, error) {
 	}
 
 	if len(foundHostedZoneIds) > 1 {
-		return "", fmt.Errorf("multiple hosted zones %v found for domain '%s'", foundHostedZoneIds, domain)
+		return "", errors.Errorf("multiple hosted zones %v found for domain '%s'", foundHostedZoneIds, domain)
 	}
 
 	if len(foundHostedZoneIds) == 0 {

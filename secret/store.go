@@ -44,7 +44,7 @@ var Store *secretStore
 var RestrictedStore *restrictedSecretStore
 
 // ErrSecretNotExists denotes 'Not Found' errors for secrets
-var ErrSecretNotExists = fmt.Errorf("There's no secret with this ID")
+var ErrSecretNotExists = errors.New("there's no secret with this ID")
 
 func init() {
 	Store = newVaultSecretStore()

@@ -16,10 +16,10 @@ package oci
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/identity"
+	"github.com/pkg/errors"
 )
 
 // Identity is for managing Identity related calls of OCI
@@ -76,7 +76,7 @@ func (i *Identity) IsRegionAvailable(name string) error {
 		return nil
 	}
 
-	return fmt.Errorf("Region '%s' is not available", name)
+	return errors.Errorf("region '%s' is not available", name)
 }
 
 // GetSubscribedRegionNames gives back an array of subscribed regions' names

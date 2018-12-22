@@ -16,10 +16,10 @@ package oci
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/core"
+	"github.com/pkg/errors"
 )
 
 // VirtualNetwork is for managing Virtual Network related calls of OCI
@@ -103,7 +103,7 @@ func (vn *VirtualNetwork) GetVCNByName(name string) (vcn core.Vcn, err error) {
 	}
 
 	if len(response.Items) < 1 {
-		return vcn, fmt.Errorf("VCN not found: %s", name)
+		return vcn, errors.Errorf("VCN not found: %s", name)
 	}
 
 	return response.Items[0], err

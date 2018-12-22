@@ -15,8 +15,6 @@
 package cluster
 
 import (
-	stderrors "errors"
-
 	intSecret "github.com/banzaicloud/pipeline/internal/secret"
 	"github.com/banzaicloud/pipeline/pkg/k8sclient"
 	"github.com/banzaicloud/pipeline/pkg/k8sutil"
@@ -142,9 +140,9 @@ type InstallSecretRequestSpecItem struct {
 	SourceMap map[string]string
 }
 
-var ErrSecretNotFound = stderrors.New("secret not found")
-var ErrKubernetesSecretNotFound = stderrors.New("kubernetes secret not found")
-var ErrKubernetesSecretAlreadyExists = stderrors.New("kubernetes secret already exists")
+var ErrSecretNotFound = errors.New("secret not found")
+var ErrKubernetesSecretNotFound = errors.New("kubernetes secret not found")
+var ErrKubernetesSecretAlreadyExists = errors.New("kubernetes secret already exists")
 
 // InstallSecret installs a new secret under the name into namespace of a Kubernetes cluster.
 // It returns the installed secret name and meta about how to mount it.

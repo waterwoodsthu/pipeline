@@ -16,7 +16,6 @@ package common
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/banzaicloud/pipeline/auth"
@@ -26,6 +25,7 @@ import (
 	pkgCommon "github.com/banzaicloud/pipeline/pkg/common"
 	"github.com/gin-gonic/gin"
 	"github.com/goph/emperror"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -84,7 +84,7 @@ func (g *clusterGetter) GetClusterFromRequest(c *gin.Context) (cluster.CommonClu
 
 		cl, err = g.manager.GetClusterByName(ctx, organizationID, clusterName)
 	default:
-		err = fmt.Errorf("field=%s is not supported", field)
+		err = errors.Errorf("field=%s is not supported", field)
 	}
 
 	if isNotFound(err) {

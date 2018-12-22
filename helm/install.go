@@ -171,7 +171,7 @@ func RetryHelmInstall(helmInstall *phelm.Install, kubeconfig []byte) error {
 		}
 		return nil
 	}
-	return fmt.Errorf("timeout during helm install")
+	return errors.New("timeout during helm install")
 }
 
 // CreateEnvSettings Create env settings on a given path

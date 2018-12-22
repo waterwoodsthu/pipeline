@@ -16,10 +16,10 @@ package oci
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/core"
+	"github.com/pkg/errors"
 )
 
 // CreateSubnet creates a Subnet specified in the request
@@ -79,7 +79,7 @@ func (vn *VirtualNetwork) GetSubnetByName(name string, vcnID *string) (subnet co
 	}
 
 	if len(response.Items) < 1 {
-		return subnet, fmt.Errorf("Subnet not found: %s", name)
+		return subnet, errors.Errorf("Subnet not found: %s", name)
 	}
 
 	return response.Items[0], err

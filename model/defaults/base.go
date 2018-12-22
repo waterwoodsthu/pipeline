@@ -15,7 +15,6 @@
 package defaults
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/banzaicloud/pipeline/config"
@@ -23,6 +22,7 @@ import (
 	"github.com/banzaicloud/pipeline/pkg/cluster/eks"
 	pkgErrors "github.com/banzaicloud/pipeline/pkg/errors"
 	oracle "github.com/banzaicloud/pipeline/pkg/providers/oracle/model"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
@@ -54,7 +54,7 @@ func SetDefaultValues() error {
 			log.WithField("cloud", d.GetCloud()).Info("default profile is missing. Setting up...")
 
 			if err := d.SaveInstance(); err != nil {
-				return fmt.Errorf("could not save default values[%s]: %s", d.GetCloud(), err.Error())
+				return errors.Wrapf(err, "could not save default values[%s]", d.GetCloud())
 			}
 		} else { // default profile already exists
 			log.WithField("cloud", d.GetCloud()).Info("default profile is already set up")

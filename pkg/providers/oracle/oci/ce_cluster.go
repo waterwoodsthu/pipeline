@@ -41,7 +41,7 @@ func (ce *ContainerEngine) CreateCluster(request containerengine.CreateClusterRe
 	}
 
 	if workReqResp.WorkRequest.Status != containerengine.WorkRequestStatusSucceeded {
-		return clusterOCID, fmt.Errorf("WorkReqResp status: %s", workReqResp.WorkRequest.Status)
+		return clusterOCID, errors.Errorf("workReqResp status: %s", workReqResp.WorkRequest.Status)
 	}
 
 	if workReqResp.WorkRequest.Status == containerengine.WorkRequestStatusSucceeded {
@@ -65,7 +65,7 @@ func (ce *ContainerEngine) UpdateCluster(request containerengine.UpdateClusterRe
 	}
 
 	if workReqResp.WorkRequest.Status != containerengine.WorkRequestStatusSucceeded {
-		return clusterOCID, fmt.Errorf("WorkReqResp status: %s", workReqResp.WorkRequest.Status)
+		return clusterOCID, errors.Errorf("workReqResp status: %s", workReqResp.WorkRequest.Status)
 	}
 
 	if workReqResp.WorkRequest.Status == containerengine.WorkRequestStatusSucceeded {
@@ -89,7 +89,7 @@ func (ce *ContainerEngine) DeleteCluster(request containerengine.DeleteClusterRe
 	}
 
 	if workReqResp.WorkRequest.Status != containerengine.WorkRequestStatusSucceeded {
-		return fmt.Errorf("WorkReqResp status: %s", workReqResp.WorkRequest.Status)
+		return errors.Errorf("workReqResp status: %s", workReqResp.WorkRequest.Status)
 	}
 
 	return nil

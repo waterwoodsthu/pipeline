@@ -15,12 +15,12 @@
 package aks
 
 import (
-	"errors"
 	"strconv"
 	"strings"
 
 	pkgCommon "github.com/banzaicloud/pipeline/pkg/common"
 	pkgErrors "github.com/banzaicloud/pipeline/pkg/errors"
+	"github.com/pkg/errors"
 )
 
 // ### [ Constants to Azure cluster default values ] ### //
@@ -127,17 +127,17 @@ func parseVersion(version string) ([]int64, error) {
 func checkVersionsIsNewerThen(version, minVersionStr string) error {
 	minVersion, err := parseVersion(minVersionStr)
 	if err != nil {
-		return errors.New("Min version format is invalid: " + minVersionStr + " Example of correct format: '1.9.2'")
+		return errors.Errorf("min version format is invalid: %s, example of correct format: '1.9.2'", minVersionStr)
 	}
 	parsedVersion, err := parseVersion(version)
 	if err != nil {
-		return errors.New("Kubernetes version format is invalid: " + version + "Example of correct format: '1.9.2'")
+		return errors.Errorf("kubernetes version format is invalid: %s, example of correct format: '1.9.2'", version)
 	}
 	for idx := range parsedVersion {
 		if parsedVersion[idx] > minVersion[idx] {
 			return nil
 		} else if parsedVersion[idx] < minVersion[idx] {
-			return errors.New("Autoscaler requires at least Kubernetes version: " + minVersionStr)
+			return errors.Errorf("autoscaler requires at least Kubernetes version: %s", minVersionStr)
 		}
 	}
 	return nil

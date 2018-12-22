@@ -17,7 +17,6 @@ package audit
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -31,6 +30,7 @@ import (
 	"github.com/banzaicloud/pipeline/spotguide"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -70,7 +70,7 @@ func LogWriter(
 			c.Request.Body.Close()
 
 			if written != c.Request.ContentLength {
-				c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("Failed to copy request body correctly"))
+				c.AbortWithError(http.StatusInternalServerError, errors.New("failed to copy request body correctly"))
 				logger.Errorln(err)
 
 				return

@@ -16,7 +16,6 @@ package cluster
 
 import (
 	"context"
-	stderrors "errors"
 
 	pkgCluster "github.com/banzaicloud/pipeline/pkg/cluster"
 	secretTypes "github.com/banzaicloud/pipeline/pkg/secret"
@@ -37,7 +36,7 @@ type CreationContext struct {
 	PostHooks      []PostFunctioner
 }
 
-var ErrAlreadyExists = stderrors.New("cluster already exists with this name")
+var ErrAlreadyExists = errors.New("cluster already exists with this name")
 
 type clusterCreator interface {
 	// Validate validates the cluster creation context.
