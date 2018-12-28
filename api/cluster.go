@@ -35,6 +35,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/goph/emperror"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -411,6 +412,48 @@ func GetClusterDetails(c *gin.Context) {
 	details.SecretName = secret.Name
 
 	c.JSON(http.StatusOK, details)
+}
+
+// GetNodepools fetch node pool info for a cluster
+func GetNodepools(c *gin.Context) {
+	commonCluster, ok := getClusterFromRequest(c)
+	if ok != true {
+		return
+	}
+	log.Debugf("getting cluster details for %v", commonCluster)
+
+	clusterStatus, err := commonCluster.GetStatus()
+	if err != nil {
+		log.Errorf("Error getting cluster: %s", err.Error())
+		c.JSON(http.StatusBadRequest, pkgCommon.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: "Error getting cluster",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	clusterTotalResources := make(map[string]float64)
+
+	response := pkgCluster.GetNodePoolsResponse{
+		NodePools:             clusterStatus.NodePools,
+		ClusterTotalResources: clusterTotalResources,
+	}
+
+	headNodePoolName := viper.GetString(config.PipelineHeadNodePoolName)
+	for nodePoolName, nodePool := range clusterStatus.NodePools {
+		if nodePoolName == headNodePoolName {
+			continue
+		}
+		machineDetails := GetMachineDetails(clusterStatus.Cloud, clusterStatus.Distribution, clusterStatus.Region, nodePool.InstanceType)
+		if machineDetails != nil {
+			clusterTotalResources["cpu"] += float64(nodePool.Count) * machineDetails.Cpus
+			clusterTotalResources["gpu"] += float64(nodePool.Count) * machineDetails.Gpus
+			clusterTotalResources["mem"] += float64(nodePool.Count) * machineDetails.Mem
+		}
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // addResourceSummaryToDetails adds resource summary to all node in each pool

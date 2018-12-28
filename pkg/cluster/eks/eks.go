@@ -56,9 +56,9 @@ func (a *NodePool) Validate() error {
 	// ---- [ Min & Max count fields are required in case of autoscaling ] ---- //
 	if a.Autoscaling {
 
-		if a.MinCount == 0 {
-			return pkgErrors.ErrorMinFieldRequiredError
-		}
+		//if a.MinCount == 0 {
+		//	return pkgErrors.ErrorMinFieldRequiredError
+		//}
 		if a.MaxCount == 0 {
 			return pkgErrors.ErrorMaxFieldRequiredError
 		}
@@ -102,9 +102,9 @@ func (a *NodePool) ValidateForUpdate() error {
 	// ---- [ Min & Max count fields are required in case of autoscaling ] ---- //
 	if a.Autoscaling {
 
-		if a.MinCount == 0 {
-			return pkgErrors.ErrorMinFieldRequiredError
-		}
+		//if a.MinCount == 0 {
+		//	return pkgErrors.ErrorMinFieldRequiredError
+		//}
 		if a.MaxCount == 0 {
 			return pkgErrors.ErrorMaxFieldRequiredError
 		}

@@ -127,6 +127,9 @@ const (
 	SpotguideAllowPrivateRepos               = "spotguide.allowPrivateRepos"
 	SpotguideSyncInterval                    = "spotguide.syncInterval"
 	SpotguideSharedLibraryGitHubOrganization = "spotguide.sharedLibraryGitHubOrganization"
+
+	//PipelineHeadNodePoolName name of our Head node pool for Pipeline Infra deployments
+	CloudInfoEndPoint = "cloudinfo.endpoint"
 )
 
 //Init initializes the configurations
